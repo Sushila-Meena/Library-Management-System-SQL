@@ -1,8 +1,206 @@
-# Library-Management-System-SQL
-A simple SQL project for managing books, members, and transactions in a library.
+
+# 📚 Library Management System (SQL Project)
+
+## 📌 Description
+A SQL-based mini-project to manage books, members, and transactions in a library system. It allows issuing and returning of books, tracking availability, and calculating fines for overdue returns using MySQL.
+
+---
+
+## 🛠 Tools Used
+- MySQL / SQL Developer
+- SQL Query Language
+
+---
+
+## 🧱 Database Tables
+
+### 📘 Books
+Stores book details.
+
+| Column     | Type         | Description          |
+|------------|--------------|----------------------|
+| Book_ID    | INT (PK)     | Unique ID of book    |
+| Title      | VARCHAR      | Book title           |
+| Author     | VARCHAR      | Author of the book   |
+| Genre      | VARCHAR      | Subject category     |
+| Quantity   | INT          | Available copies     |
+
+---
+
+### 👤 Members
+Stores member registration data.
+
+| Column          | Type         | Description          |
+|-----------------|--------------|----------------------|
+| Member_ID       | INT (PK)     | Unique ID of member  |
+| Name            | VARCHAR      | Full name            |
+| Email           | VARCHAR      | Unique email address |
+| Phone           | VARCHAR      | Mobile number        |
+| Membership_Date | DATE         | Joining date         |
+
+---
+
+### 🔄 Transactions
+Tracks book issue and return operations.
+
+| Column       | Type         | Description                           |
+|--------------|--------------|---------------------------------------|
+| Txn_ID       | INT (PK)     | Unique transaction ID                 |
+| Book_ID      | INT (FK)     | Book being issued                     |
+| Member_ID    | INT (FK)     | Member who issued the book            |
+| Issue_Date   | DATE         | Date when book was issued             |
+| Return_Date  | DATE         | Date when book was returned           |
+| Fine         | INT          | Fine for late return (₹10/day > 15)   |
+
+---
+
+## 🔁 Features
+- 📥 Issue and return books
+- 📉 Track available stock
+- 📅 Calculate fine for late return (₹10 per day after 15 days)
+- 🧾 View pending transactions
+- 📊 Track total fines collected
+
+---
+
 
 
 ## OUTPUTS
 
 <img width="1126" height="634" alt="Screenshot (64)" src="https://github.com/user-attachments/assets/95680ad3-9eda-41b7-882a-94c26fecd9ac" />
+
+
+
+## ⚙️ How to Run This Project
+
+1. Open MySQL or SQL Developer.
+2. Create and select a new database:
+   ```sql
+   CREATE DATABASE library_db;
+   USE library_db;
+
+
+
+
+
+
+
+
+library_management.sql
+
+CREATE DATABASE library_db;
+USE library_db;
+
+-- Drop tables if they exist
+DROP TABLE IF EXISTS Transactions;
+DROP TABLE IF EXISTS Members;
+DROP TABLE IF EXISTS Books;
+
+-- Create Books Table
+CREATE TABLE Books (
+    Book_ID INT PRIMARY KEY,
+    Title VARCHAR(100),
+    Author VARCHAR(100),
+    Genre VARCHAR(50),
+    Quantity INT CHECK (Quantity >= 0)
+);
+
+-- Create Members Table
+CREATE TABLE Members (
+    Member_ID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Email VARCHAR(100) UNIQUE,
+    Phone VARCHAR(15),
+    Membership_Date DATE
+);
+
+-- Create Transactions Table
+CREATE TABLE Transactions (
+    Txn_ID INT PRIMARY KEY,
+    Book_ID INT,
+    Member_ID INT,
+    Issue_Date DATE,
+    Return_Date DATE,
+    Fine INT DEFAULT 0,
+    FOREIGN KEY (Book_ID) REFERENCES Books(Book_ID),
+    FOREIGN KEY (Member_ID) REFERENCES Members(Member_ID)
+);
+-- Insert Books
+INSERT INTO Books VALUES
+(101, 'C Programming', 'Dennis Ritchie', 'Programming', 5),
+(102, 'Database Systems', 'Raghu Ramakrishnan', 'Databases', 3);
+
+-- Insert Members
+INSERT INTO Members VALUES
+(201, 'Sohan Kumar', 'sohan@gmail.com', '9876543210', '2024-01-10'),
+(202, 'Riya Sharma', 'riya@gmail.com', '9123456780', '2024-02-15');
+SELECT * FROM Books;
+SELECT * FROM Members;
+
+-- Issue Book_ID 101 to Member_ID 201
+INSERT INTO Transactions (Txn_ID, Book_ID, Member_ID, Issue_Date)
+VALUES (301, 101, 201, '2024-07-01');
+
+-- Decrease book quantity
+UPDATE Books
+SET Quantity = Quantity - 1
+WHERE Book_ID = 101;
+
+-- Check results
+SELECT * FROM Transactions;
+SELECT * FROM Books;
+
+-- Return Book for Txn_ID 301 on '2024-07-21'
+UPDATE Transactions
+SET Return_Date = '2024-07-21',
+    Fine = CASE
+        WHEN DATEDIFF('2024-07-21', Issue_Date) > 15 THEN
+            (DATEDIFF('2024-07-21', Issue_Date) - 15) * 10
+        ELSE 0
+    END
+WHERE Txn_ID = 301;
+
+-- Increase quantity back
+UPDATE Books
+SET Quantity = Quantity + 1
+WHERE Book_ID = 101;
+
+-- Check final state
+SELECT * FROM Transactions WHERE Txn_ID = 301;
+SELECT * FROM Books WHERE Book_ID = 101;
+
+
+-- View all books
+SELECT * FROM Books;
+
+-- View all currently issued books (not returned)
+SELECT * FROM Transactions WHERE Return_Date IS NULL;
+
+-- View members with pending returns
+SELECT m.Name, t.Book_ID, t.Issue_Date
+FROM Members m
+JOIN Transactions t ON m.Member_ID = t.Member_ID
+WHERE t.Return_Date IS NULL;
+
+-- Total fines collected
+SELECT SUM(Fine) AS Total_Fine FROM Transactions;
+
+-- Books that are out of stock
+SELECT * FROM Books WHERE Quantity = 0;
+
+
+
+
+
+
+
+Sushila Meena
+B.Tech (Electronics and Communication Engineering)
+MNIT Jaipur
+
+
+
+
+
+
 
