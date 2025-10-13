@@ -62,6 +62,15 @@ Tracks book issue and return operations.
 
 ---
 
+
+
+
+## OUTPUTS
+
+<img width="1126" height="634" alt="Screenshot (64)" src="https://github.com/user-attachments/assets/95680ad3-9eda-41b7-882a-94c26fecd9ac" />
+
+
+
 ## ⚙️ How to Run This Project
 
 1. Open MySQL or SQL Developer.
@@ -184,6 +193,7 @@ SELECT * FROM Books WHERE Quantity = 0;
 Sushila Meena
 B.Tech (Electronics and Communication Engineering)
 MNIT Jaipur
+
 
 
 
