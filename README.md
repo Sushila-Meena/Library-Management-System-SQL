@@ -195,8 +195,7 @@ SELECT * FROM Books WHERE Quantity = 0;
 
 
 Sushila Meena
-B.Tech (Electronics and Communication Engineering)
-MNIT Jaipur
+
 
 
 
